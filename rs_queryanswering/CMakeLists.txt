@@ -3,8 +3,7 @@ project(rs_queryanswering)
 
 find_package(catkin REQUIRED rosjava_build_tools rosprolog designator_integration_cpp
              designator_integration_msgs knowrob_common knowrob_actions knowrob_srdl
-             tf tf_conversions knowrob_vis robosherlock robosherlock_demos
-             rs_addons rs_simulation roslib rospack iai_robosherlock_msgs image_transport
+             tf tf_conversions knowrob_vis robosherlock rs_addons roslib rospack iai_robosherlock_msgs image_transport
              semrec_client json_prolog)
 
 find_package(PkgConfig)
@@ -43,7 +42,7 @@ find_include_dirs(RS_INCLUDE_DIRS_LIST)
 catkin_package(
     INCLUDE_DIRS ${RS_INCLUDE_DIRS_LIST} ${SWIPL_INCLUDE_DIRS}
     CATKIN_DEPENDS designator_integration_msgs iai_robosherlock_msgs
-                   robosherlock_demos designator_integration_cpp semrec_client json_prolog
+                   designator_integration_cpp semrec_client json_prolog
     LIBRARIES rs_designator_wrapper rs_kbAEmanagement ${SWIPL_LIBRARY_DIRS}
     CFG_EXTRAS ${PROJECT_NAME}_config.cmake
 )
@@ -65,10 +64,10 @@ include_directories(
 ################################################################################
 
 ##Update xml list of annotators inside analysis engines
-update_analysis_engines(robosherlock robosherlock_demos rs_addons rs_simulation)
+update_analysis_engines(robosherlock rs_addons)
 
 ## generate classes from the typesystem xml files
-generate_type_system(robosherlock robosherlock_demos rs_addons rs_simulation)
+generate_type_system(robosherlock rs_addons )
 
 #find all relevant files
 find_additional_files()

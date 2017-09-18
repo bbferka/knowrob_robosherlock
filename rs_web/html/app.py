@@ -42,7 +42,7 @@ def index():
 
 @app.route('/prolog_query', methods=['GET', 'POST'])
 def query_wrapper():
-    if request.method == 'POST':
+   if request.method == 'POST':
         query_in = request.data
         print("query is: " + query_in, file=sys.stderr)
         if query_in == 'objects':
@@ -67,7 +67,6 @@ def query_wrapper():
                     return render_template("emptyPage.html")
             except ParseException:
                 return render_template("emptyPage.html")
-
 
 @app.route('/_get_queries', methods=['GET'])
 def serve_static_file():
