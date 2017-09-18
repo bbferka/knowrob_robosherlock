@@ -18,12 +18,13 @@
   <depend>knowrob_vis</depend>
   <depend>knowrob_actions</depend>
   <depend>knowrob_srdl</depend>
+  <depend>json_prolog</depend>
   <depend>robosherlock</depend>
-  <depend>robosherlock_demos</depend>
+ <!-- <depend>robosherlock_demos</depend>   -->
   <depend>designator_integration_cpp</depend>
   <depend>image_transport</depend>
   <depend>semrec_client</depend>
-  <depend>rs_simulation</depend>
+<!--  <depend>rs_simulation</depend>  -->
   
 
 </package>
