@@ -1,6 +1,6 @@
 from __future__ import print_function  # In python 2.7
 
-from flask import Flask, render_template, current_app, request, jsonify
+from flask import Flask, render_template, current_app, request, jsonify, redirect
 from flask_paginate import Pagination, get_page_args
 
 import sys
@@ -40,8 +40,13 @@ def index():
     return render_template('startup.html')
 
 
+
+
+
+
 @app.route('/prolog_query', methods=['GET', 'POST'])
 def query_wrapper():
+
    if request.method == 'POST':
         query_in = request.data
         print("query is: " + query_in, file=sys.stderr)
@@ -88,6 +93,7 @@ def handle_scenes(ts1 = None, ts2 = None):
     # idxB = (page-1)*per_page
     # idxE = page*per_page
 
+
     scenes = []
     start_time = time.time()
     idx_begin = 0
@@ -119,6 +125,19 @@ def handle_scenes(ts1 = None, ts2 = None):
     #                         per_page=per_page,
     #                         pagination=pagination)
 
+#set new root to correct groundTruth annotations
+@app.route('/newpost', methods=['GET', 'POST'])
+def databaseQ():
+    clname = request.form.get('classN')
+    timestm = request.form.get('timeS')
+    imgnum = request.form.get('imgN')
+    print('inputed value is:', clname, timestm, imgnum)
+    if not clname and not timestm and not imgnum:
+        print("All the GT tool's inputs are empty")
+    else:
+        mc.setGTinDB(int(timestm), int(imgnum), clname)
+        print("Database is updated with GT tool's informations")
+    return redirect("Location:http://127.0.0.1")
 
 def find_object_instances(obj_id):
     objects = mc.get_object_instances(obj_id)
