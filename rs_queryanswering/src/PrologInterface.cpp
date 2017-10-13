@@ -1,20 +1,28 @@
 #include <rs_queryanswering/PrologInterface.h>
 
 
-PrologInterface::PrologInterface()
+PrologInterface::PrologInterface(bool json_prolog)
 {
-  char *argv[4];
-  int argc = 0;
-  argv[argc++] = "PrologEngine";
-  argv[argc++] = "-f";
-  std::string rosPrologInit = ros::package::getPath("rosprolog") + "/prolog/init.pl";
-  argv[argc] = new char[rosPrologInit.size() + 1];
-  std::copy(rosPrologInit.begin(), rosPrologInit.end(), argv[argc]);
-  argv[argc++][rosPrologInit.size()] = '\0';
-  argv[argc] = NULL;
-  engine  = std::make_shared<PlEngine>(argc, argv);
-
-  init();
+  useJsonProlog = json_prolog;
+  if(!this->useJsonProlog)
+  {
+    outInfo("Opening own Prolog Engine");
+    char *argv[4];
+    int argc = 0;
+    argv[argc++] = "PrologEngine";
+    argv[argc++] = "-f";
+    std::string rosPrologInit = ros::package::getPath("rosprolog") + "/prolog/init.pl";
+    argv[argc] = new char[rosPrologInit.size() + 1];
+    std::copy(rosPrologInit.begin(), rosPrologInit.end(), argv[argc]);
+    argv[argc++][rosPrologInit.size()] = '\0';
+    argv[argc] = NULL;
+    engine  = std::make_shared<PlEngine>(argc, argv);
+    init();
+  }
+  else
+  {
+    outInfo("Creating ROS Service client for json_prolog");
+  }
 }
 
 void PrologInterface::init()
@@ -32,7 +40,7 @@ void PrologInterface::init()
 }
 
 bool PrologInterface::extractQueryKeysFromDesignator(designator_integration::Designator *desig,
-                                    std::vector<std::string> &keys)
+    std::vector<std::string> &keys)
 {
   if(!desig)
   {
@@ -68,21 +76,30 @@ bool PrologInterface::extractQueryKeysFromDesignator(designator_integration::Des
 bool PrologInterface::buildPrologQueryFromDesignator(designator_integration::Designator *desig,
     std::string &prologQuery)
 {
-
-    prologQuery = "build_single_pipeline_from_predicates([";
-    std::vector<std::string> queriedKeys;
-    extractQueryKeysFromDesignator(desig,queriedKeys);
-    for(int i = 0; i < queriedKeys.size(); i++)
-    {
-      prologQuery += queriedKeys.at(i);
-      if(i < queriedKeys.size() - 1)
-      {
-        prologQuery += ",";
-      }
-    }
-    prologQuery += "], A)";
-    return true;
+  std::vector<std::string> queriedKeys;
+  extractQueryKeysFromDesignator(desig, queriedKeys);
+  prologQuery = buildPrologQueryFromKeys(queriedKeys);
+  return true;
 }
+
+
+std::string PrologInterface::buildPrologQueryFromKeys(const std::vector<std::string> &keys)
+{
+
+  std::string prologQuery = "build_single_pipeline_from_predicates([";
+  for(int i = 0; i < keys.size(); i++)
+  {
+    prologQuery += keys.at(i);
+    if(i < keys.size() - 1)
+    {
+      prologQuery += ",";
+    }
+  }
+  prologQuery += "], A)";
+  return prologQuery;
+}
+
+
 std::vector< std::string > PrologInterface::createPipelineFromPrologResult(std::string queryResult)
 {
   std::vector<std::string> new_pipeline;
