@@ -34,7 +34,7 @@ function Knowrob(options){
 //    var episodeURL = options.episode_url;
 //     var episodeURL = 'queriesForRoboSherlock.json'
   
-    var episodeURL = [ 'queriesForEASE.json','queriesForRoboSherlock.json'];
+    var episodeURL = [ 'static/queries/queriesForEASE.json','queriesForRoboSherlock.json'];
     // Parsed episode data file
     var episodeData = undefined;
     
@@ -43,7 +43,7 @@ function Knowrob(options){
     // The topic where the canvas publishes snapshots
     var snapshotTopic;
     
-    var meshPath  = options.meshPath || '/';
+    var meshPath  = options.meshPath || '/static/meshes/iai_maps';
 
     // URL for rosauth token retrieval
     var authURL  = options.auth_url || '/wsauth/v1.0/by_session';
